@@ -14,14 +14,15 @@ const SongBookList = (props) => {
   const [isShow, setIsShow] = useState(false);
   const [songId, setSongId] = useState(0);
   const [songText, setSongText] = useState("");
+  //const [songListId, setSongListId] = useState(props.songListId);
 
   useEffect(() => {
     fetchSongs();
-  },[]);
+  },[props.songListId]);
 
   async function fetchSongs() {
     setIsLoading(true);
-    await fetch(`${DATABASE_MAIN}songs.php`)
+    await fetch(`${DATABASE_MAIN}songs.php?songlist=${props.songListId}`)
       .then((response) => {
         response.json().then((data) => {
           const trasformedSongs = data.map((songItem) => {

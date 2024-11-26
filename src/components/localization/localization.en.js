@@ -118,6 +118,8 @@ export const TRANSLATIONS_EN = {
     selectAction: "Select Action",
     ExportToPDF : "Export to PDF",
     ExportToXLSX: "Export to XLSX",
+    red: "Red",
+    yellow: "Yellow",
 
     songBook: "Song Book",
     songMessage: "Kelťs song book",

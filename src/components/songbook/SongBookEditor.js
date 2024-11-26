@@ -5,18 +5,19 @@ import draftToHtml from "draftjs-to-html";
 import { DATABASE_MAIN } from "../contexts/api";
 //import htmlToDraft from 'html-to-draftjs';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import ChordSheetJS from 'chordsheetjs';
+import "./song.css"
 
 const SongBookEditor = (props) => {
-  const [cronicle, setCronicle] = useState();
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
+  const [song, setSong] = useState();
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [songParsedText, setSongParsedText] = useState("");
 
   useEffect(() => {
-    fetchCronicle(props.id);
+    fetchSongs(props.id);
   }, [props.id]);
 
-  async function fetchCronicle(id) {
+  async function fetchSongs(id) {
     await fetch(`${DATABASE_MAIN}songs.php?id=${id}`)
       .then((response) => {
         response.json().then((data) => {
@@ -25,12 +26,12 @@ const SongBookEditor = (props) => {
               id: item.id,
               songname: item.songname,
               autorname: item.autorname,
-              song: item.song,
+              songText: item.song,
               nick: item.nick,
               songlist: item.songlist,
             };
           });      
-          return setCronicle(trasformedCronic[0]);
+          return setSong(trasformedCronic[0]);
         });
       })
       .catch((error) => {
@@ -40,8 +41,8 @@ const SongBookEditor = (props) => {
 
   useEffect(() => {
     //console.log(cronicle);
-    if (cronicle){
-      const blocksFromHTML = convertFromHTML(cronicle.song);
+    if (song){
+      const blocksFromHTML = convertFromHTML(song.songText);
       //You need to use the below customContentStateConverter function to convert content state before passing to createWithContent.
       setEditorState(
         EditorState.createWithContent(
@@ -49,10 +50,22 @@ const SongBookEditor = (props) => {
             ContentState.createFromBlockArray(
               blocksFromHTML.contentBlocks,
               blocksFromHTML.entityMap
-            ))
-      ));
+            )
+          )
+        )
+      );
+      
+      getSongParsed(song.songText);
+
     }    
-  }, [cronicle]);
+  }, [song]);
+
+  const getSongParsed = (songText) => {
+    const parser = new ChordSheetJS.ChordProParser();
+    const songParsed = parser.parse(songText);
+    const formatter = new ChordSheetJS.HtmlDivFormatter();
+    setSongParsedText(formatter.format(songParsed));
+  };
 
   const customContentStateConverter = (contentState) => {
     // changes block type of images to 'atomic'
@@ -79,59 +92,27 @@ const SongBookEditor = (props) => {
     return newContentState;
 }
 
-  const uploadImageCallback = (file, callback) => {
-    //console.log(file);
-    return new Promise((resolve, reject) => {
-      const reader = new window.FileReader();
-      reader.onloadend = async () => {
-        const form_data = new FormData();
-        form_data.append("file", file);
-        await fetch(`${DATABASE_MAIN}uploadFile_.php`, {
-          method: "POST",
-          body: form_data,
-          //headers: { "Content-Type": "multipart/form-data", },
-          mode: "cors",
-        })
-        .catch((error) => console.log(error))
-        .then((response)=>{
-            if (response.ok){
-              response.json()
-              .then(resp => resolve({ data: { link: "https://www.oskelt.cz/" + resp.fileName }}))
-            }
-          }
-        );
-
-        //console.log(process.env);
-        
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
   return (
-    <div id="cronicleEdit">
-      <div className="p-1 mb-1 border rounded-2 shadow w-75 mx-auto">
-        <Editor
-          editorState={editorState}
-          onEditorStateChange={setEditorState}
-          toolbar={{
-            options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'history'],
-            inline: { inDropdown: true },
-            list: { inDropdown: true },
-            textAlign: { inDropdown: true },
-            link: { inDropdown: true },
-            history: { inDropdown: true },
-            image: { 
-              urlEnabled: true,
-              uploadEnabled: true,
-              uploadCallback: uploadImageCallback, 
-              previewImage: true,
-              alt: { present: true, mandatory: false },
-              inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
-            },
-          }}
-        />
-        
+    <div id="songEdit">
+
+      <div className="row p-1 mb-1 border rounded-2 shadow w-75 mx-auto">
+        <div className="col-md-6 border rounded-2 shadow">
+          <Editor
+            editorState={editorState}
+            onEditorStateChange={setEditorState}
+            toolbar={{
+              options: ['inline','blockType','fontSize','textAlign','colorPicker','history'],
+              inline: { inDropdown: true },            
+              textAlign: { inDropdown: true },
+              history: { inDropdown: true },
+            }}
+          />
+        </div>
+        <div className="col-md-6 border rounded-2 shadow">
+          <p className="lead">
+            <div id="chordProReader" dangerouslySetInnerHTML={{__html: songParsedText}} />
+          </p>
+        </div>
       </div>
       <div className="row w-75 mx-auto">
         <textarea

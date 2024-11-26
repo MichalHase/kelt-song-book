@@ -117,6 +117,8 @@ export const TRANSLATIONS_CS = {
     selectAction: "Vyber akci",
     ExportToPDF :"Export do PDF",
     ExportToXLSX: "Export do XLSX",
+    red: "Červená",
+    yellow: "Žlutá",
     
     songBook: "Zpěvník",
     songMessage: "Kelťácký zpěvník",
