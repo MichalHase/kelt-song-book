@@ -1,0 +1,10 @@
+.inputText {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .inputText.invalid input {
+    border-color: red;
+    background: #fbdada;
+  }
+  

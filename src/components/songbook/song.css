@@ -1,0 +1,90 @@
+:root {
+    --chordpro-chord-color: var(--red-base);
+    --chordpro-label-color: var(--blue-dark);
+    --chordpro-comment-background: var(--grey-light);
+    --chordpro-comment-color: var(--grey-black);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --chordpro-chord-color: var(--red-light);
+      --chordpro-label-color: var(--blue-base);
+      --chordpro-comment-background: var(--grey-light);
+      --chordpro-comment-color: var(--grey-black);
+    }
+  }
+  
+  /* reset bootstrap vlastností */
+  .chord-sheet .row,
+  .chord-sheet .row > * {
+    flex-wrap: inherit;
+    flex-shrink: inherit;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+  }
+  
+  /* #fullscreen .chord-sheet {
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  } */
+  
+  .chord-sheet .paragraph {
+    margin-bottom: 2rem;
+  }
+  #fullscreen .chord-sheet .paragraph {
+    margin-bottom: 2rem;
+  }
+  .chord-sheet .paragraph.chorus {
+    border-left: 5px solid #606F7B;
+    padding-left: 1rem;
+  }
+  
+  .chord-sheet .row {
+    display: flex; /* It will show as row */
+    flex-wrap: wrap; /* If there is not enough space, last div will go down to new line */
+  }
+  
+  /* sloky a refrény odsadit */
+  .chord-sheet .paragraph.verse .row,
+  .chord-sheet .paragraph.chorus .row {
+    margin-left: 2rem;
+  }
+  /* jejich nadpisy nechat od okraje stránky */
+  .chord-sheet .paragraph.verse .row .label,
+  .chord-sheet .paragraph.chorus .row .label {
+    margin-left: -2rem;
+  }
+  /* barva akordu */
+  .chord-sheet .chord {
+    color: var(--chordpro-chord-color);
+    font-weight: bold;
+  }
+  /* aby se řádek bez akordů vykreslil stejně vysoký, jako by v něm akordy byly */
+  .chord-sheet .chord:after {
+    content: '\200b'; /* Zero Width Space */
+    display: inline-block; /* kvůli safari * jinak se tam mezera nevykreslí */
+  }
+  /* aby za koncem slova byla mezera */
+  .chord-sheet .lyrics:after {
+    content: '\200b'; /* Zero Width Space */
+    display: inline-block; /* kvůli safari * jinak se tam mezera nevykreslí */
+  }
+  
+  /* komentáře */
+  .chord-sheet .comment {
+    background-color:  var(--chordpro-comment-background);
+    color:  var(--chordpro-comment-color);
+    padding: 0.375rem 0.5rem;
+  }
+  
+  /* sloka, refren: vypsat kurzívou, jinak stejný font jako text písně  */
+  .chord-sheet .label {
+    font-style: italic;
+    font-family: var(--bs-body-font-family);
+    font-size: var(--bs-body-font-size);
+    font-weight: var(--bs-body-font-weight);
+    line-height: var(--bs-body-line-height);
+    color: var(--chordpro-label-color);
+  }
+  

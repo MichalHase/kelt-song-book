@@ -1,0 +1,10 @@
+.inputAge {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .inputAge.invalid input {
+    border-color: red;
+    background: #fbdada;
+  }
+  

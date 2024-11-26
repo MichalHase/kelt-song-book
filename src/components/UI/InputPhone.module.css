@@ -1,0 +1,9 @@
+.inputPhone {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.inputPhone.invalid input {
+  border-color: red;
+  background: #fbdada;
+}
